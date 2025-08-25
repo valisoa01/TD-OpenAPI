@@ -1,26 +1,22 @@
 openapi: 3.0.3
 info:
-  title: STD24182 - Exo3
-  version: "1.0.0"
-
-servers:
-  - url: http://127.0.0.1:8000
-
+  title: Task Management API
+  version: 1.0.0
 paths:
   /tasks:
     get:
-      summary: Retourne une liste de tâches
+      summary: Récupérer toutes les tâches
       responses:
-        "200":
+        '200':
           description: Liste des tâches
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Task"
+                  $ref: '#/components/schemas/Task'
     post:
-      summary: Crée une liste de nouvelles tâches
+      summary: Créer une liste de tâches
       requestBody:
         required: true
         content:
@@ -28,18 +24,18 @@ paths:
             schema:
               type: array
               items:
-                $ref: "#/components/schemas/Task"
+                $ref: '#/components/schemas/Task'
       responses:
-        "201":
-          description: Liste des tâches créées
+        '201':
+          description: Liste de tâches créée
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Task"
+                  $ref: '#/components/schemas/Task'
     delete:
-      summary: Supprime une liste de tâches par IDs
+      summary: Supprimer plusieurs tâches
       requestBody:
         required: true
         content:
@@ -49,32 +45,28 @@ paths:
               items:
                 type: integer
       responses:
-        "200":
-          description: Liste des tâches supprimées
+        '200':
+          description: Tâches supprimées
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Task"
+                  $ref: '#/components/schemas/Task'
 
   /tasks/{id}:
     get:
-      summary: Retourne une tâche par ID
+      summary: Récupérer une tâche par ID
       parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
+        - $ref: '#/components/parameters/TaskId'
       responses:
-        "200":
+        '200':
           description: Tâche trouvée
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Task"
-        "404":
+                $ref: '#/components/schemas/Task'
+        '404':
           description: Tâche non trouvée
           content:
             application/json:
@@ -83,32 +75,19 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: Task not found
+              example:
+                message: "Task not found"
     delete:
-      summary: Supprime une tâche par ID
+      summary: Supprimer une tâche
       parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
+        - $ref: '#/components/parameters/TaskId'
       responses:
-        "200":
+        '200':
           description: Tâche supprimée
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Task"
-        "404":
-          description: Tâche non trouvée
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Task not found
+                $ref: '#/components/schemas/Task'
 
 components:
   schemas:
@@ -117,10 +96,14 @@ components:
       properties:
         id:
           type: integer
-          example: 1
         title:
           type: string
-          example: Faire les courses
         completed:
           type: boolean
-          example: false
+  parameters:
+    TaskId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: integer

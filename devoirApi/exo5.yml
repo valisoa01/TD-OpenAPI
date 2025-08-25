@@ -1,0 +1,130 @@
+openapi: 3.0.3
+info:
+  title: Orders & Products API
+  version: 1.0.0
+tags:
+  - name: Products
+    description: Gestion des produits
+  - name: Orders
+    description: Gestion des commandes
+paths:
+  /products:
+    get:
+      tags: [Products]
+      summary: Lister les produits
+      parameters:
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Q'
+      responses:
+        '200':
+          description: Liste des produits
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+  /orders:
+    get:
+      tags: [Orders]
+      summary: Lister les commandes paginées
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Size'
+      responses:
+        '200':
+          description: Liste des commandes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Order'
+              example:
+                - identifier: 1
+                  customer_name: Alice
+                  creation_datetime: "2025-08-25T08:30:00Z"
+                  total_amount: 150.5
+    post:
+      tags: [Orders]
+      summary: Créer une commande
+      security:
+        - basicAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Order'
+            example:
+              identifier: 2
+              customer_name: Bob
+              creation_datetime: "2025-08-25T10:00:00Z"
+              total_amount: 200
+      responses:
+        '201':
+          description: Commande créée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        name:
+          type: string
+        expiration_datetime:
+          type: string
+          format: date-time
+        price:
+          type: number
+          format: float
+    Order:
+      type: object
+      properties:
+        identifier:
+          type: integer
+        customer_name:
+          type: string
+        creation_datetime:
+          type: string
+          format: date-time
+        total_amount:
+          type: number
+          format: float
+  parameters:
+    Limit:
+      name: limit
+      in: query
+      schema:
+        type: integer
+      required: false
+      example: 5
+    Q:
+      name: q
+      in: query
+      schema:
+        type: string
+      required: false
+      example: ordinateur
+    Page:
+      name: page
+      in: query
+      schema:
+        type: integer
+      required: false
+      example: 1
+    Size:
+      name: size
+      in: query
+      schema:
+        type: integer
+      required: false
+      example: 10
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
